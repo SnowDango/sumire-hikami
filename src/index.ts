@@ -1,9 +1,10 @@
 import express, {NextFunction, Request, Response} from "express";
-import methodOverride from "method-override"
-import {auth} from "express-openid-connect"
-import {middleware} from "express-errorhandlers";
+import methodOverride from "method-override";
+import {auth} from "express-openid-connect";
+import { setupReactViews } from "express-tsx-views";
+import path from "path";
 import {load} from "ts-dotenv";
-import http from "http"
+import http from "http";
 import {router} from "./secure/auth0Callback";
 
 // env
@@ -17,7 +18,6 @@ const env = load({
 });
 
 export const app = express(); //express
-
 
 app.use(express.json());
 app.use(auth({
@@ -33,9 +33,15 @@ app.use(auth({
     postLogoutRedirect: "/"
   },
 }));
+
+const viewOption = {
+  viewsDirectory: path.resolve(__dirname, "../views"),
+  prettify: true,
+}
+setupReactViews(app,viewOption)
 // error handle
 app.use(methodOverride())
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+app.use((_err: any, _req: Request, res: Response, _next: NextFunction) => {
   res.redirect("/failed")
 });
 app.use(router)

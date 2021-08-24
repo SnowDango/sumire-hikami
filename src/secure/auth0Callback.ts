@@ -1,5 +1,7 @@
 import {Request, Response, Router} from "express";
 import {requiresAuth} from "express-openid-connect";
+import {Props} from "../../views/components/App";
+import {ReactDOM} from "react";
 
 export const router = Router()
 
@@ -13,11 +15,11 @@ router.get("/callback", ((req: Request, res: Response) => {
 }))
 
 // login failed page
-router.use("/failed", ((req: Request,res: Response) => {
+router.use("/failed", ((_req: Request,res: Response) => {
   res.send("access denied: without permission.")
 }))
 
-router.use("/logout",(((req: Request, res: Response) => {
+router.use("/logout",(((_req: Request, res: Response) => {
   res.oidc.login({
   }).then(data => {
     res.send(data)
@@ -25,6 +27,7 @@ router.use("/logout",(((req: Request, res: Response) => {
 })))
 
 // login success
-router.use("*",requiresAuth(), (((req: Request, res: Response) => {
-  res.send(req.oidc.user)
+router.use("*",requiresAuth(), (((_req: Request, res: Response) => {
+  const data: Props = { title: "Sample", lang: "ja" }
+  res.render("components/App",data);
 })))
