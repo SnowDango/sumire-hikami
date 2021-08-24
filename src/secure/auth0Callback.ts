@@ -3,6 +3,7 @@ import {requiresAuth} from "express-openid-connect";
 
 export const router = Router()
 
+//callback
 router.get("/callback", ((req: Request, res: Response) => {
   if(!req.isAuthenticated()){
     res.redirect("/failed")
@@ -17,7 +18,10 @@ router.use("/failed", ((req: Request,res: Response) => {
 }))
 
 router.use("/logout",(((req: Request, res: Response) => {
-  res.oidc.logout;
+  res.oidc.login({
+  }).then(data => {
+    res.send(data)
+  })
 })))
 
 // login success
